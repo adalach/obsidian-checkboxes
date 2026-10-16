@@ -2,9 +2,12 @@
 
 **Checklists that aren't tasks.**
 
-In Obsidian, every `- [ ]` is a task. Your grocery list, your packing list and the forty sights you want to see in Padova all land in the Tasks plugin's queries, in Dataview task lists, in `task:` searches and in every dashboard built on them. Checkboxes adds a second kind of box, `- ( )`, that you can tick just the same but that no task tool ever picks up.
+In Obsidian, every `- [ ]` is a task. 
+Meanwhile, your grocery list, your packing list, and the forty sights you want to see in Padova all land in the Tasks plugin's queries, in Dataview task lists, in task: searches, and in every dashboard built on them. 
+Totally unwanted.
+Checkboxes adds a second kind of box, `- ( )`, that you can tick just the same but that no task tool ever picks up.
 
-<!-- TODO: GIF: ticking items in a packing list, the progress bar filling, Hide checked -->
+![A grocery list written as tasks floods a Tasks dashboard; written as Checkboxes items it stays out, and ticking adds done dates, a progress bar and Hide checked](assets/checkboxes-demo.webp)
 
 > [!important] Not a replacement for Tasks
 > Checkboxes does not manage tasks: no due dates, priorities, recurrence or queries. Keep using the [Tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) plugin, Dataview or plain checkboxes for your to-dos. Checkboxes takes care of everything else, so your task views show only real tasks.
@@ -32,19 +35,19 @@ Both kinds can live in the same note. A trip note can hold "Book the museum tick
 - **Hide checked** on the bar shows only what is left.
 - **Faint checked items** with a grey ✅, so the open ones stand out.
 - **A count in the status bar** for the note you are in.
-- **Typing that feels native:** Enter starts the next `( )` item, Enter on an empty item ends the list, and Backspace at the start of an item turns it back into a plain bullet.
-- **Nothing to configure:** any note with `( )` items gets the progress display. There are no properties, folders, tags or query filters to keep up to date.
+- **Typing that feels native:** Enter starts the next `- ( )` item, Enter on an empty item ends the list, and Backspace at the start of an item turns it back into a plain bullet.
+- **Nothing to configure:** any note with `- ( )` items gets the progress display. There are no properties, folders, tags or query filters to keep up to date.
 
 ## Usage
 
-| Do this | How |
-|---|---|
-| Start a checklist item | Type `- ( ) `, or run **Toggle checklist item** on a line |
-| Check or uncheck | Click the box, or run **Toggle checklist item** |
-| Skip an item | Write `(-)` instead of `( )` |
-| Turn a task into a checklist item | Run **Toggle checklist item** on the task (a checked task stays checked) |
-| Convert a whole note | Command **Convert tasks in this note to checklist items** (one undoable step) |
-| Show only open items | **Hide checked** on the progress bar, or the command **Hide or show checked items** |
+| Do this                           | How                                                                                 |
+| --------------------------------- | ----------------------------------------------------------------------------------- |
+| Start a checklist item            | Type `- ( ) `, or run **Toggle checklist item** on a line                           |
+| Check or uncheck                  | Click the box, or run **Toggle checklist item**                                     |
+| Skip an item                      | Write `- (-)` instead of `- ( )`                                                    |
+| Turn a task into a checklist item | Run **Toggle checklist item** on the task (a checked task stays checked)            |
+| Convert a whole note              | Command **Convert tasks in this note to checklist items** (one undoable step)       |
+| Show only open items              | **Hide checked** on the progress bar, or the command **Hide or show checked items** |
 
 **Toggle checklist item** works on the cursor line or on every selected line. It has no hotkey out of the box, so it cannot clash with yours; **Cmd/Ctrl+Shift+L** is a good choice under **Settings → Hotkeys**. Obsidian's own **Cmd/Ctrl+L** keeps toggling tasks, so both kinds are then one shortcut away.
 
@@ -73,7 +76,7 @@ The last two rows are the trade-off: `( )` is not standard Markdown, so outside 
 
 ## Without the plugin
 
-The lines stay readable: `( ) Oat milk` and `(x) Coffee ✅ 2026-10-16` are plain text in any editor, on GitHub, in an export or on a phone without the plugin. To check an item there, type an `x` between the brackets. Nothing is stored outside your notes.
+The lines stay readable: `- ( ) Oat milk` and `- (x) Coffee ✅ 2026-10-16` are plain text in any editor, on GitHub, in an export or on a phone without the plugin. To check an item there, type an `x` between the brackets. Nothing is stored outside your notes.
 
 ## Compatibility
 
@@ -93,13 +96,6 @@ Open **Settings → Community plugins → Browse**, search for **Checkboxes**, t
 
 To install it by hand, download `main.js`, `manifest.json` and `styles.css` from the [latest release](https://github.com/adalach/obsidian-checkboxes/releases/latest) into `<vault>/.obsidian/plugins/checkboxes/` and turn it on under **Settings → Community plugins**. [BRAT](https://github.com/TfTHacker/obsidian42-brat) can install pre-releases from `adalach/obsidian-checkboxes`.
 
-## FAQ
-
-**Why parentheses?** `( )` mirrors `[ ]`, is quick to type, reads like a box in plain text, and is not used by Markdown or by any task plugin.
-
-**Can I switch back?** Yes. Replace `( )` with `[ ]` and `(x)` with `[x]` with a find-and-replace; the ✅ dates are already in the Tasks format.
-
-**Does it work with my grocery list template?** Yes. Templates are plain text, so write `- ( ) ` in them and every new list starts as a checklist.
 
 ## Development
 
