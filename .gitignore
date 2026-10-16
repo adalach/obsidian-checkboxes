@@ -1,0 +1,12 @@
+# dependencies and build output: main.js ships only as a release asset
+node_modules/
+main.js
+*.map
+
+# Obsidian's per-vault settings for this plugin
+data.json
+
+# the design mockup was drawn with private notes
+design/
+
+.DS_Store

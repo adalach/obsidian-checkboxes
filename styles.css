@@ -1,0 +1,173 @@
+/* Checkboxes. Every color comes from the active Obsidian theme. */
+
+/* ---------- progress bar above the note text ---------- */
+.cp-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 2px 12px;
+	padding: 6px 0 7px;
+	margin-bottom: 6px;
+	font-family: var(--font-interface);
+	font-size: var(--font-ui-small);
+	line-height: 1.4;
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+	background-color: var(--background-primary);
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+/* In Live Preview the bar sits beside the inline title; follow the theme's readable line width
+   (Minimal sizes children of .cm-sizer; the default theme sizes .cm-sizer itself). */
+.markdown-source-view.mod-cm6.is-readable-line-width .cm-sizer > .cp-bar {
+	width: var(--line-width, auto);
+	max-width: var(--max-width, none);
+	margin-inline: var(--content-margin, auto);
+}
+.cp-bar.cp-sticky {
+	position: sticky;
+	top: var(--cp-stick, 0);
+	z-index: 3;
+}
+.cp-track {
+	flex: 0 1 240px;
+	min-width: 100px;
+	height: 5px;
+	border-radius: 3px;
+	background-color: var(--background-modifier-border);
+	overflow: hidden;
+}
+.cp-fill {
+	height: 100%;
+	border-radius: 3px;
+	background-color: var(--interactive-accent);
+	transition: width 0.25s ease;
+}
+.cp-num {
+	color: var(--text-normal);
+	font-weight: var(--font-semibold);
+}
+.cp-bar.is-complete .cp-num { color: var(--text-accent); }
+.cp-last {
+	color: var(--text-faint);
+	filter: grayscale(1);
+}
+.cp-bar .cp-toggle {
+	margin-left: auto;
+	height: auto;
+	padding: 0 2px;
+	border: 0;
+	background: none;
+	box-shadow: none;
+	color: var(--text-accent);
+	font-size: inherit;
+	font-weight: inherit;
+	cursor: var(--cursor);
+}
+.cp-bar .cp-toggle:hover {
+	background: none;
+	text-decoration: underline;
+}
+
+/* ---------- heading counts: an outer float sized like the heading line, the count on its baseline ---------- */
+.cp-count {
+	float: right;
+	margin-left: 1em;
+	font-weight: var(--font-normal);
+}
+.cp-count-text {
+	font-family: var(--font-interface);
+	font-size: var(--font-ui-smaller);
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0;
+	white-space: nowrap;
+	color: var(--text-faint);
+}
+.cp-count.is-complete .cp-count-text { color: var(--text-accent); }
+
+/* ---------- the box: Obsidian's own checkbox look, in place of the bullet ---------- */
+.cp-box-wrap {
+	display: inline-block;
+	position: relative;
+	text-indent: 0;
+}
+input.cp-box {
+	margin: 0 0.45em 0 0;
+	vertical-align: middle;
+	position: relative;
+	top: -0.08em;
+	cursor: var(--cursor);
+}
+/* Live Preview: the wrap is as wide as the bullet it replaces; the box sits over it */
+.cp-box-wrap.is-bullet .cp-bullet-ghost {
+	visibility: hidden;
+}
+.cp-box-wrap.is-bullet input.cp-box {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin: 0;
+	transform: translateY(-50%);
+}
+/* in Reading view the box takes the bullet's place, as Obsidian's own task checkbox does */
+.markdown-rendered ul > li.cp-item {
+	list-style: none;
+}
+.markdown-rendered ul > li.cp-item > .list-bullet {
+	display: none;
+}
+.markdown-rendered ul > li.cp-item input.cp-box {
+	margin-inline-start: calc(var(--checkbox-size, 15px) * -1.5);
+	margin-inline-end: var(--size-4-2, 8px);
+}
+
+/* ---------- checked items: faint, no strike-through; skipped items struck through ---------- */
+.cp-dim .cp-item-line:is([data-cp-item="x"], [data-cp-item="X"]),
+.cp-dim li.cp-item.is-checked {
+	color: var(--text-faint);
+}
+.cp-item-line[data-cp-item="-"],
+li.cp-item[data-cp-item="-"] {
+	color: var(--text-faint);
+	text-decoration: line-through;
+}
+
+/* the green ✅ emoji ignores text color; grey it out on checked items */
+.cp-dim .cp-done-date {
+	filter: grayscale(1);
+	opacity: 0.55;
+}
+
+/* ---------- "Hide checked" ---------- */
+.cp-hide-checked .markdown-source-view.is-live-preview .cp-item-line:is([data-cp-item="x"], [data-cp-item="X"]),
+.cp-hide-checked .markdown-reading-view li.cp-item.is-checked {
+	display: none;
+}
+/* their line numbers collapse to zero height; hide them instead of letting them overlap */
+.cp-hide-checked .markdown-source-view .cm-gutterElement[style^="height: 0px"] {
+	visibility: hidden;
+}
+
+/* ---------- status bar ---------- */
+.cp-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-variant-numeric: tabular-nums;
+}
+.cp-status-track {
+	display: inline-block;
+	width: 28px;
+	height: 3px;
+	border-radius: 2px;
+	background-color: var(--background-modifier-border);
+	overflow: hidden;
+}
+.cp-status-fill {
+	display: block;
+	height: 100%;
+	background-color: var(--interactive-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cp-fill { transition: none; }
+}
