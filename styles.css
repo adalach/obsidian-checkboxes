@@ -14,7 +14,6 @@
 	color: var(--text-muted);
 	font-variant-numeric: tabular-nums;
 	background-color: var(--background-primary);
-	border-bottom: 1px solid var(--background-modifier-border);
 }
 /* In Live Preview the bar sits beside the inline title; follow the theme's readable line width
    (Minimal sizes children of .cm-sizer; the default theme sizes .cm-sizer itself). */
