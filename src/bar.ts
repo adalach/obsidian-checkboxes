@@ -146,7 +146,6 @@ export class ProgressBars {
 		const hidden = p.el.closest(".cp-hide-checked") !== null;
 		p.el.toggleClass("cp-sticky", s.stickyBar);
 		p.el.toggleClass("is-complete", stats.total > 0 && stats.done === stats.total);
-		p.el.setAttr("aria-label", `${stats.done} of ${stats.total} checked`);
 		p.fill.style.width = `${pct}%`;
 		p.num.setText(`${stats.done}/${stats.total}`);
 		p.pct.setText(`${pct}%`);
@@ -172,7 +171,6 @@ export function createCount(done: number, total: number): HTMLElement {
 
 export function setCount(el: HTMLElement, done: number, total: number): void {
 	el.toggleClass("is-complete", total > 0 && done === total);
-	el.setAttr("aria-label", `${done} of ${total} checked`);
 	(el.firstElementChild as HTMLElement | null)?.setText(countLabel(done, total));
 }
 

@@ -45,7 +45,6 @@ class BoxWidget extends WidgetType {
 		const state = itemState(this.status);
 		box.checked = state === "done";
 		box.indeterminate = state === "skip";
-		box.setAttr("aria-label", state === "done" ? "Uncheck item" : "Check item");
 		// keep the cursor where it is: the click only edits the marker
 		box.addEventListener("mousedown", e => e.preventDefault());
 		box.addEventListener("click", e => {

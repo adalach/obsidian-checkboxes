@@ -115,7 +115,6 @@ export default class CheckboxesPlugin extends Plugin {
 		}
 		el.empty();
 		el.show();
-		el.setAttr("aria-label", "Checklist progress");
 		el.createSpan({ cls: "cp-status-track" }).createSpan({ cls: "cp-status-fill" }).style.width = `${percent(stats.done, stats.total)}%`;
 		el.createSpan({ text: `${stats.done}/${stats.total} checked` });
 	}
