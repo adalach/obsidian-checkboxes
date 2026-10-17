@@ -3,7 +3,7 @@
 **Checklists that aren't tasks.**
 
 In Obsidian, every `- [ ]` is a task. 
-Meanwhile, your grocery list, your packing list, and the forty sights you want to see in Padova all land in the Tasks plugin's queries, in Dataview task lists, in task: searches, and in every dashboard built on them. 
+Meanwhile, your grocery list, the one for next week, and the one for the party all land in the Tasks plugin's queries, in Dataview task lists, in task: searches, and in every dashboard built on them. 
 Totally unwanted.
 Checkboxes adds a second kind of box, `- ( )`, that you can tick just the same but that no task tool ever picks up.
 
@@ -24,19 +24,18 @@ Checkboxes adds a second kind of box, `- ( )`, that you can tick just the same b
 - (-) Avocados                                    ← skipped: struck through, not counted
 ```
 
-Both kinds can live in the same note. A trip note can hold "Book the museum tickets 📅" as a task and the sights as checklist items.
+Both kinds can live in the same note. A party note can hold "Order the cake 📅" as a task and the groceries as checklist items.
 
 ## Features
 
 - **Clickable boxes everywhere you read a note:** Live Preview, Reading view, embeds and hover previews. They use your theme's own checkbox, so they look like the boxes you already have.
 - **Done dates:** checking writes `✅ 2026-10-16`, unchecking removes it.
 - **Progress bars where you want them:** a small `checkboxes` code block draws a filling bar with `14/42` for the section it sits in, a heading of your choice, or another note. It can stay pinned at the top while you scroll through its section.
-- **Counts on headings,** such as `3/6`, so a packing list shows at a glance which bag is done. A heading counts its subheadings too.
+- **Counts on headings,** such as `3/6`, so a grocery list shows at a glance which part of the shop is done. A heading counts its subheadings too.
 - **Hide checked** on a progress bar shows only what is left.
 - **Faint checked items** with a grey ✅, so the open ones stand out.
 - **A count in the status bar** for the note you are in, if you turn it on.
-- **Typing that feels native:** Enter starts the next `- ( )` item, Enter on an empty item ends the list, and Backspace at the start of an item turns it back into a plain bullet.
-- **Nothing to configure:** any note with `- ( )` items gets boxes and heading counts. There are no properties, folders, tags or query filters to keep up to date.
+
 
 ## Usage
 
@@ -62,33 +61,19 @@ progress
 ```
 ````
 
-It counts the checklist items of the section it sits in, subheadings included: at the top of a note it counts the whole note, under `## Europe` all of Europe, under `### Albania` only Albania. The word `progress` is optional; it just tells anyone reading the raw text what the block is.
+It counts the checklist items of the section it sits in, subheadings included: at the top of a note it counts the whole note, under `## Fruits and vegs` all fruits and vegetables, under `### Fruits` only the fruits. The word `progress` is optional; it just tells anyone reading the raw text what the block is.
 
 To count something else, add a heading, a note, or both:
 
 ````markdown
 ```checkboxes
 progress
-heading: Grocery list
-note: Weekly shopping
+heading: Fruits and vegs
+note: Grocery list
 ```
 ````
 
-`note:` takes a note name as you would link it (`Padova` or `[[Padova]]`), so a trip overview can show the bars of several trip notes. Without `heading:`, a bar for another note counts all of it.
-
 A bar that counts its own note has a **Hide checked** switch. With **Sticky progress bar** on (the default), the bar stays at the top of the note while you scroll through its section; with bars in nested sections, the innermost one is shown.
-
-## Why not…
-
-**…plain checkboxes, excluded from queries?** That works until it doesn't. Every Tasks query, every Dataview query and every dashboard needs its own exclusion, the paths break when you rename a note, and Obsidian's `task:` search ignores all of them.
-
-**…a Tasks custom status like `[P]` set to `NON_TASK`?** Tasks has [custom statuses](https://publish.obsidian.md/tasks/Getting+Started/Statuses/Custom+Statuses), and the `NON_TASK` type is meant for checkbox-like lines that aren't actionable. It is the closest thing to this plugin, but it solves a different problem:
-
-- Tasks still indexes these lines. They stay out of `not done` queries, but Tasks counts `NON_TASK` as done, so they show up in `done` queries such as "recently completed" unless every such query adds `status.type is not NON_TASK`.
-- Only Tasks knows about the status. Dataview, Obsidian's `task:` search and other task plugins still see a task.
-- You configure the status yourself, and Obsidian draws `[P]` as a checked box unless your theme styles it.
-
-**…the Tasks global filter?** Tasks can treat only lines with a tag such as `#task` as tasks. Then every real task needs that tag, and Dataview and Obsidian itself still see every checkbox.
 
 ## Without the plugin
 
@@ -96,10 +81,10 @@ The lines stay readable: `- ( ) Oat milk` and `- (x) Coffee ✅ 2026-10-16` are 
 
 ## Compatibility
 
-- Works on its own: Tasks and Dataview are not needed. Alongside them, and with any theme, it works too; task plugins only read `[ ]`, so they never see checklist items.
+- Works on its own: Tasks and Dataview are not needed. Alongside them, and with any theme, it works too; task plugins only read `- [ ]`, so they never see checklist items.
 - Desktop and mobile.
-- Source mode shows the raw `( )` text, like it shows `[ ]`.
-- Lines starting with `(a)` or `(1)` stay ordinary text: only `( )`, `(x)`, `(X)` and `(-)` are checklist items.
+- Source mode shows the raw `- ( )` text, like it shows `- [ ]`.
+- Lines starting with `- (a)` or `- (1)` stay ordinary text: only `- ( )`, `- (x)`, `- (X)` and `- (-)` are checklist items.
 - In an embed or hover preview, a click finds the item's line by its text. If a note has two items with the same text under the same heading, a notice asks you to tick it in the note itself.
 
 ## Settings
@@ -107,8 +92,6 @@ The lines stay readable: `- ( ) Oat milk` and `- (x) Coffee ✅ 2026-10-16` are 
 Done dates, heading counts, the sticky progress bar and dimming of checked items can each be turned off. The status-bar count is off until you turn it on.
 
 ## Installation
-
-Open **Settings → Community plugins → Browse**, search for **Checkboxes**, then select **Install** and **Enable**.
 
 To install it by hand, download `main.js`, `manifest.json` and `styles.css` from the [latest release](https://github.com/adalach/obsidian-checkboxes/releases/latest) into `<vault>/.obsidian/plugins/checkboxes/` and turn it on under **Settings → Community plugins**. [BRAT](https://github.com/TfTHacker/obsidian42-brat) can install pre-releases from `adalach/obsidian-checkboxes`.
 
