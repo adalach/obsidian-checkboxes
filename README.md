@@ -61,7 +61,7 @@ progress
 ```
 ````
 
-It counts the checklist items of the section it sits in, subheadings included: at the top of a note it counts the whole note, under `## Fruits and vegs` all fruits and vegetables, under `### Fruits` only the fruits. The word `progress` is optional; it just tells anyone reading the raw text what the block is.
+It counts the checklist items of the section it sits in, subheadings included: at the top of a note it counts the whole note, under `## Weekend` the whole weekend shopping with its subheadings, under `### Fruits and vegs` only that list. The word `progress` is optional; it just tells anyone reading the raw text what the block is.
 
 To count something else, add a heading, a note, or both:
 
