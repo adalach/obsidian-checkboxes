@@ -1,7 +1,7 @@
 {
   "id": "checkboxes",
   "name": "Checkboxes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minAppVersion": "1.13.0",
   "description": "Checklists that aren't tasks: tick \"- ( )\" items with a progress bar and heading counts, while task plugins ignore them.",
   "author": "Agata Dalach",
