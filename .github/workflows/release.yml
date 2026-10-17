@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  id-token: write # attestations: sign the build provenance
+  attestations: write
 
 jobs:
   release:
@@ -29,6 +31,13 @@ jobs:
       - run: npm run build
       - run: npm test
       - run: npm run lint
+      - name: Attest that the release files were built from this repository
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
       - name: Create a draft release
         env:
           GH_TOKEN: ${{ github.token }}

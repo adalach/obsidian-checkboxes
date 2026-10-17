@@ -2,11 +2,11 @@
 // items: clickable boxes that task plugins ignore. Notes with items get per-heading counts and dimmed
 // checked items; a ```checkboxes block draws a progress bar.
 import type { EditorView } from "@codemirror/view";
-import { MarkdownView, Plugin, debounce, moment } from "obsidian";
+import { MarkdownView, Plugin, debounce } from "obsidian";
 import { blockProcessor } from "./block";
 import { registerCommands } from "./commands";
 import { checklistEditor, enterKeymap, refreshEditor } from "./editor";
-import { ChecklistStats, analyzeCached, percent } from "./logic";
+import { ChecklistStats, analyzeCached, localDate, percent } from "./logic";
 import { readingProcessor } from "./reading";
 import { ChecklistSettingTab, ChecklistSettings, DEFAULT_SETTINGS } from "./settings";
 import { StickyBars } from "./sticky";
@@ -30,7 +30,7 @@ export default class CheckboxesPlugin extends Plugin {
 	}, 120, false);
 
 	/** Today's date for a newly checked item, or null when done dates are off. */
-	today = (): string | null => (this.settings.doneDates ? moment().format("YYYY-MM-DD") : null);
+	today = (): string | null => (this.settings.doneDates ? localDate(new Date()) : null);
 
 	async onload(): Promise<void> {
 		await this.loadSettings();

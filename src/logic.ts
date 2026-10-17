@@ -234,6 +234,12 @@ export function analyze(text: string): ChecklistStats {
 }
 
 /** Whole percent, 0 for an empty list. */
+/** A date as YYYY-MM-DD in local time, the format of the ✅ done date. */
+export function localDate(d: Date): string {
+	const pad = (n: number) => String(n).padStart(2, "0");
+	return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export function percent(done: number, total: number): number {
 	return total ? Math.round(done / total * 100) : 0;
 }

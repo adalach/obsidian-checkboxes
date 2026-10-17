@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
-	analyze, analyzeCached, applyEdits, blockCount, findBlocks, sectionEnd, convertTasks, countLabel, enterAction, findItemLine, hotkeyEdits, itemText,
+	analyze, analyzeCached, applyEdits, localDate, blockCount, findBlocks, sectionEnd, convertTasks, countLabel, enterAction, findItemLine, hotkeyEdits, itemText,
 	parseBlock, parseItem, percent, textMatches, toggleEdits,
 } from "../src/logic";
 
@@ -135,6 +135,7 @@ describe("matching rendered items", () => {
 	it("labels counts", () => {
 		expect(countLabel(7, 8)).toBe("7/8");
 		expect(countLabel(8, 8)).toBe("8/8 ✓");
+		expect(localDate(new Date(2026, 0, 5, 23, 59))).toBe("2026-01-05");
 	});
 });
 
