@@ -7,7 +7,7 @@ Meanwhile, your grocery list, the one for next week, and the one for the party a
 Totally unwanted.
 Checkboxes adds a second kind of box, `- ( )`, that you can tick just the same but that no task tool ever picks up.
 
-![A grocery list written as tasks floods a Tasks dashboard; written as Checkboxes items it stays out, and ticking adds done dates, a progress bar and Hide checked](assets/checkboxes-demo.webp)
+![A grocery list written as tasks floods a Tasks dashboard; written as Checkboxes items it stays out, and a checkboxes block adds a progress bar that fills as items are ticked, with Hide checked](assets/checkboxes-demo.webp)
 
 > [!important] Not a replacement for Tasks
 > Checkboxes does not manage tasks: no due dates, priorities, recurrence or queries. Keep using the [Tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) plugin, Dataview or native tasks for your to-dos. Checkboxes takes care of everything else, so your task views show only real tasks.
