@@ -3,7 +3,7 @@
 // of view, so this works from the note's text: the view's top line against each block's line range.
 import { MarkdownView } from "obsidian";
 import { buildBar } from "./block";
-import { analyzeCached, blockCount, findBlocks, sectionEnd } from "./logic";
+import { analyzeCached, blockCount, findBlocksCached, sectionEnd } from "./logic";
 import type { ChecklistSettings } from "./settings";
 import type { ChecklistViews } from "./views";
 
@@ -21,7 +21,7 @@ export class StickyBars {
 		const stats = analyzeCached(text);
 		// the innermost section with a bar that counts its own section
 		let start = -1;
-		for (const b of findBlocks(text)) {
+		for (const b of findBlocksCached(text)) {
 			if (b.opts.note || b.opts.heading || b.line >= top || b.line <= start) continue;
 			if (top < sectionEnd(stats, b.line)) start = b.line;
 		}

@@ -331,6 +331,14 @@ export function sectionEnd(stats: ChecklistStats, line: number): number {
 	return next ? next.line : Infinity;
 }
 
+let blocksMemo: { text: string; blocks: { line: number; opts: BlockOptions }[] } | null = null;
+
+/** findBlocks for the last text asked about: the sticky bar asks on every scroll event. */
+export function findBlocksCached(text: string): { line: number; opts: BlockOptions }[] {
+	if (blocksMemo?.text !== text) blocksMemo = { text, blocks: findBlocks(text) };
+	return blocksMemo.blocks;
+}
+
 /** Every ```checkboxes block in a note: the line of its opening fence and its options. */
 export function findBlocks(text: string): { line: number; opts: BlockOptions }[] {
 	const lines = text.split("\n"), out: { line: number; opts: BlockOptions }[] = [];
