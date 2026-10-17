@@ -171,3 +171,20 @@ li.cp-item[data-cp-item="-"] {
 @media (prefers-reduced-motion: reduce) {
 	.cp-fill { transition: none; }
 }
+
+/* ---------- a bar placed with a ```checkboxes block ---------- */
+.cp-block {
+	display: flex;
+	align-items: center;
+	gap: 2px 12px;
+	flex-wrap: wrap;
+	padding: 4px 0;
+	font-family: var(--font-interface);
+	font-size: var(--font-ui-small);
+	line-height: 1.4;
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+.cp-block-label { color: var(--text-normal); }
+.cp-block.is-complete .cp-num { color: var(--text-accent); }
+.cp-block-missing { color: var(--text-faint); }

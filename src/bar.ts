@@ -1,5 +1,6 @@
-// The one-line progress bar above the text of a note with checklist items, in Live Preview/source
-// and in Reading view, plus the class that hides checked items and the reading-view heading counts.
+// The one-line progress bar above the text of a note whose properties have `checkboxes: true`, in
+// Live Preview/source and in Reading view, plus the class that hides checked items, the reading-view
+// heading counts, and the bars placed with a ```checkboxes block.
 import { MarkdownView } from "obsidian";
 import { ChecklistStats, analyzeCached, countLabel, percent } from "./logic";
 import type { ChecklistSettings } from "./settings";
@@ -11,7 +12,6 @@ interface BarParts {
 	el: HTMLElement;
 	fill: HTMLElement;
 	num: HTMLElement;
-	pct: HTMLElement;
 	last: HTMLElement;
 	toggle: HTMLButtonElement;
 }
@@ -26,7 +26,11 @@ export class ProgressBars {
 	private bars = new WeakMap<HTMLElement, BarParts>(); // per sizer
 	private watchers = new Map<HTMLElement, MutationObserver>(); // per sizer
 
-	constructor(private settings: () => ChecklistSettings, private onToggleHidden: (path: string) => void) {}
+	constructor(
+		private settings: () => ChecklistSettings,
+		private onToggleHidden: (path: string) => void,
+		private wantsBar: (view: MarkdownView) => boolean, // the note's properties ask for the bar
+	) {}
 
 	isHidden(path: string): boolean {
 		return this.hidden.has(path);
@@ -56,7 +60,9 @@ export class ProgressBars {
 			this.removeFrom(view);
 			return null;
 		}
-		for (const host of this.hosts(view)) this.render(this.ensure(host, file!.path), stats, s);
+		if (this.wantsBar(view)) {
+			for (const host of this.hosts(view)) this.render(this.ensure(host, file!.path), stats, s);
+		} else this.removeBars(view);
 		this.updateReadingCounts(view, stats);
 		return stats;
 	}
@@ -64,6 +70,10 @@ export class ProgressBars {
 	/** Remove every bar, class and watcher this plugin added to a view. */
 	removeFrom(view: MarkdownView): void {
 		view.containerEl.removeClasses(VIEW_CLASSES);
+		this.removeBars(view);
+	}
+
+	private removeBars(view: MarkdownView): void {
 		for (const { sizer } of this.hosts(view)) {
 			this.watchers.get(sizer)?.disconnect();
 			this.watchers.delete(sizer);
@@ -120,7 +130,6 @@ export class ProgressBars {
 				el,
 				fill: track.createDiv({ cls: "cp-fill" }),
 				num: el.createSpan({ cls: "cp-num" }),
-				pct: el.createSpan({ cls: "cp-pct" }),
 				last: el.createSpan({ cls: "cp-last" }),
 				toggle: el.createEl("button", { cls: "cp-toggle", attr: { type: "button" } }),
 			};
@@ -148,7 +157,6 @@ export class ProgressBars {
 		p.el.toggleClass("is-complete", stats.total > 0 && stats.done === stats.total);
 		p.fill.style.width = `${pct}%`;
 		p.num.setText(`${stats.done}/${stats.total}`);
-		p.pct.setText(`${pct}%`);
 		p.last.setText(stats.last ? `last ✅ ${stats.last}` : "");
 		p.toggle.setText(hidden ? `Show checked (${stats.done})` : "Hide checked");
 	}

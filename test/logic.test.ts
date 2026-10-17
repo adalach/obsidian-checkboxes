@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
-	analyze, analyzeCached, applyEdits, convertTasks, countLabel, enterAction, findItemLine, hotkeyEdits, itemText,
-	parseItem, percent, textMatches, toggleEdits,
+	analyze, analyzeCached, applyEdits, blockCount, convertTasks, countLabel, enterAction, findItemLine, hotkeyEdits, itemText,
+	parseBlock, parseItem, percent, textMatches, toggleEdits,
 } from "../src/logic";
 
 // A trip note written with Tasks checkboxes, before converting
@@ -135,5 +135,20 @@ describe("matching rendered items", () => {
 	it("labels counts", () => {
 		expect(countLabel(7, 8)).toBe("7/8");
 		expect(countLabel(8, 8)).toBe("8/8 ✓");
+	});
+});
+
+describe("checkboxes blocks", () => {
+	it("reads heading and note, with or without link brackets", () => {
+		expect(parseBlock("heading: Grocery list\nnote: [[Padova]]\n")).toEqual({ heading: "Grocery list", note: "Padova" });
+		expect(parseBlock("Heading:  #Sights ")).toEqual({ heading: "Sights", note: null });
+		expect(parseBlock("")).toEqual({ heading: null, note: null });
+	});
+	it("counts one heading's section, the whole note, or nothing for a missing heading", () => {
+		const s = analyze(padova);
+		expect(blockCount(s, "Vicenza — Places to See")).toEqual({ done: 2, total: 14 });
+		expect(blockCount(s, "vicenza places to see")).toEqual({ done: 2, total: 14 });
+		expect(blockCount(s, null)).toEqual({ done: 14, total: 42 });
+		expect(blockCount(s, "Nowhere")).toBeNull();
 	});
 });

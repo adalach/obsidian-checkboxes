@@ -289,3 +289,27 @@ export function analyzeCached(text: string): ChecklistStats {
 	if (memo.size > MEMO_SIZE) memo.delete(memo.keys().next().value as string);
 	return stats;
 }
+
+/* ---------- ```checkboxes blocks ---------- */
+
+export interface BlockOptions {
+	heading: string | null;
+	note: string | null;
+}
+
+export function parseBlock(source: string): BlockOptions {
+	const opts: BlockOptions = { heading: null, note: null };
+	for (const line of source.split("\n")) {
+		const m = /^\s*(heading|note)\s*:\s*(.*?)\s*$/iu.exec(line);
+		if (m && m[2]) opts[m[1].toLowerCase() as keyof BlockOptions] = m[2].replace(/^\[\[|\]\]$/gu, "").replace(/^#/u, "");
+	}
+	return opts;
+}
+
+/** Done and total for the block: one heading's section, or the whole note. Null when the heading is missing. */
+export function blockCount(stats: ChecklistStats, heading: string | null): { done: number; total: number } | null {
+	if (!heading) return { done: stats.done, total: stats.total };
+	const want = normalizeForMatch(heading);
+	const h = stats.headings.find(x => normalizeForMatch(x.text) === want);
+	return h ? { done: h.done, total: h.total } : null;
+}

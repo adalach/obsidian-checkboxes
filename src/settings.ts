@@ -15,7 +15,7 @@ export const DEFAULT_SETTINGS: ChecklistSettings = {
 	headingCounts: true,
 	stickyBar: true,
 	dimChecked: true,
-	statusBar: true,
+	statusBar: false,
 };
 
 export class ChecklistSettingTab extends PluginSettingTab {
@@ -27,14 +27,9 @@ export class ChecklistSettingTab extends PluginSettingTab {
 		const toggle = (name: string, desc: string, key: keyof ChecklistSettings) =>
 			({ name, desc, control: { type: "toggle", key, defaultValue: DEFAULT_SETTINGS[key] } }) as const;
 		return [
-			{
-				name: "Checklist items",
-				desc: "List lines that start with ( ), (x) or (-) instead of [ ]. Task plugins ignore them, and every note that has them gets a progress bar.",
-				searchable: false,
-			},
 			toggle("Done dates", "Write ✅ and today's date when an item is checked, and remove it when unchecked.", "doneDates"),
 			toggle("Heading counts", "Show checked/total at the right edge of each heading.", "headingCounts"),
-			toggle("Sticky progress bar", "Keep the progress bar at the top of the note while scrolling.", "stickyBar"),
+			toggle("Sticky progress bar", "Keep the progress bar of a note with checkboxes: true at the top while scrolling.", "stickyBar"),
 			toggle("Dim checked items", "Show checked items in faint text with a grey ✅.", "dimChecked"),
 			toggle("Status bar", "Show the active note's progress in the status bar.", "statusBar"),
 		];

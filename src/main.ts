@@ -1,9 +1,10 @@
 // Checkboxes: wiring only. List lines starting with "( )", "(x)" or "(-)" are checklist
-// items: clickable boxes that task plugins ignore. Notes with items get a progress bar, per-heading
-// counts, dimmed checked items and a status-bar count.
+// items: clickable boxes that task plugins ignore. Notes with items get per-heading counts and dimmed
+// checked items; a progress bar with `checkboxes: true` in the properties or a ```checkboxes block.
 import type { EditorView } from "@codemirror/view";
 import { MarkdownView, Plugin, debounce, moment } from "obsidian";
 import { ProgressBars, updateRenderedCounts } from "./bar";
+import { blockProcessor } from "./block";
 import { registerCommands } from "./commands";
 import { checklistEditor, enterKeymap, refreshEditor } from "./editor";
 import { ChecklistStats, analyzeCached, percent } from "./logic";
@@ -28,7 +29,8 @@ export default class CheckboxesPlugin extends Plugin {
 	async onload(): Promise<void> {
 		await this.loadSettings();
 		const settings = () => this.settings;
-		this.bars = new ProgressBars(settings, path => this.refreshPath(path));
+		this.bars = new ProgressBars(settings, path => this.refreshPath(path),
+			view => !!view.file && this.app.metadataCache.getFileCache(view.file)?.frontmatter?.checkboxes === true);
 		this.statusEl = this.addStatusBarItem();
 		this.statusEl.addClass("cp-status");
 		this.statusEl.hide();
@@ -36,6 +38,7 @@ export default class CheckboxesPlugin extends Plugin {
 
 		this.registerEditorExtension([checklistEditor(settings, this.today), enterKeymap()]);
 		this.registerMarkdownPostProcessor(readingProcessor(this.app, settings, this.today));
+		this.registerMarkdownCodeBlockProcessor("checkboxes", blockProcessor(this.app));
 		this.addSettingTab(new ChecklistSettingTab(this.app, this));
 		registerCommands(this);
 
