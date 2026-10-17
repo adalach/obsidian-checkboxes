@@ -9,8 +9,7 @@ Checkboxes adds a second kind of box, `- ( )`, that you can tick just the same b
 
 ![A grocery list written as tasks floods a Tasks dashboard; written as Checkboxes items it stays out, and a checkboxes block adds a progress bar that fills as items are ticked, with Hide checked](assets/checkboxes-demo.webp)
 
-> [!important] Not a replacement for Tasks
-> Checkboxes does not manage tasks: no due dates, priorities, recurrence or queries. Keep using the [Tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) plugin, Dataview or native tasks for your to-dos. Checkboxes takes care of everything else, so your task views show only real tasks.
+Checkboxes does not manage tasks: no due dates, priorities, recurrence or queries. Keep using the [Tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) plugin, Dataview or native tasks for your to-dos. Checkboxes takes care of everything else, so your task views show only real tasks.
 
 ## Two kinds of boxes
 
