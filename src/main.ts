@@ -30,7 +30,11 @@ export default class CheckboxesPlugin extends Plugin {
 		await this.loadSettings();
 		const settings = () => this.settings;
 		this.bars = new ProgressBars(settings, path => this.refreshPath(path),
-			view => !!view.file && this.app.metadataCache.getFileCache(view.file)?.frontmatter?.checkboxes === true);
+			view => {
+				// a checkbox property is true; a text property typed as "true" counts too
+				const v: unknown = view.file && this.app.metadataCache.getFileCache(view.file)?.frontmatter?.checkboxes;
+				return v === true || (typeof v === "string" && v.trim().toLowerCase() === "true");
+			});
 		this.statusEl = this.addStatusBarItem();
 		this.statusEl.addClass("cp-status");
 		this.statusEl.hide();
