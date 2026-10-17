@@ -297,6 +297,7 @@ export interface BlockOptions {
 	note: string | null;
 }
 
+/** The block's lines: `progress` (says what the block is; optional), `heading: …` and `note: …`. */
 export function parseBlock(source: string): BlockOptions {
 	const opts: BlockOptions = { heading: null, note: null };
 	for (const line of source.split("\n")) {
@@ -306,10 +307,41 @@ export function parseBlock(source: string): BlockOptions {
 	return opts;
 }
 
-/** Done and total for the block: one heading's section, or the whole note. Null when the heading is missing. */
-export function blockCount(stats: ChecklistStats, heading: string | null): { done: number; total: number } | null {
-	if (!heading) return { done: stats.done, total: stats.total };
-	const want = normalizeForMatch(heading);
-	const h = stats.headings.find(x => normalizeForMatch(x.text) === want);
-	return h ? { done: h.done, total: h.total } : null;
+/** Done and total for a block: the named heading's section; else the section of the heading above the
+ *  block's line (subheadings included); else the whole note. Null when a named heading is missing. */
+export function blockCount(stats: ChecklistStats, heading: string | null, line: number | null = null): { done: number; total: number } | null {
+	if (heading) {
+		const want = normalizeForMatch(heading);
+		const h = stats.headings.find(x => normalizeForMatch(x.text) === want);
+		return h ? { done: h.done, total: h.total } : null;
+	}
+	if (line != null) {
+		const above = stats.headings.filter(h => h.line < line).pop();
+		if (above) return { done: above.done, total: above.total };
+	}
+	return { done: stats.done, total: stats.total };
+}
+
+/** The line where the section holding `line` ends: the next heading at the same or a higher level than
+ *  the heading above `line`, or Infinity (the end of the note, also when no heading is above). */
+export function sectionEnd(stats: ChecklistStats, line: number): number {
+	const above = stats.headings.filter(h => h.line < line).pop();
+	if (!above) return Infinity;
+	const next = stats.headings.find(h => h.line > above.line && h.level <= above.level);
+	return next ? next.line : Infinity;
+}
+
+/** Every ```checkboxes block in a note: the line of its opening fence and its options. */
+export function findBlocks(text: string): { line: number; opts: BlockOptions }[] {
+	const lines = text.split("\n"), out: { line: number; opts: BlockOptions }[] = [];
+	for (let i = 0; i < lines.length; i++) {
+		const m = /^\s*(`{3,}|~{3,})\s*checkboxes\s*$/u.exec(lines[i]);
+		if (!m) continue;
+		const fence = m[1], body: string[] = [];
+		let j = i + 1;
+		while (j < lines.length && !lines[j].trim().startsWith(fence)) body.push(lines[j++]);
+		out.push({ line: i, opts: parseBlock(body.join("\n")) });
+		i = j;
+	}
+	return out;
 }

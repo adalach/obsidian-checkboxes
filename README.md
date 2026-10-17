@@ -10,7 +10,7 @@ Checkboxes adds a second kind of box, `- ( )`, that you can tick just the same b
 ![A grocery list written as tasks floods a Tasks dashboard; written as Checkboxes items it stays out, and ticking adds done dates, a progress bar and Hide checked](assets/checkboxes-demo.webp)
 
 > [!important] Not a replacement for Tasks
-> Checkboxes does not manage tasks: no due dates, priorities, recurrence or queries. Keep using the [Tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) plugin, Dataview or plain checkboxes for your to-dos. Checkboxes takes care of everything else, so your task views show only real tasks.
+> Checkboxes does not manage tasks: no due dates, priorities, recurrence or queries. Keep using the [Tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) plugin, Dataview or native tasks for your to-dos. Checkboxes takes care of everything else, so your task views show only real tasks.
 
 ## Two kinds of boxes
 
@@ -30,13 +30,13 @@ Both kinds can live in the same note. A trip note can hold "Book the museum tick
 
 - **Clickable boxes everywhere you read a note:** Live Preview, Reading view, embeds and hover previews. They use your theme's own checkbox, so they look like the boxes you already have.
 - **Done dates:** checking writes `✅ 2026-10-16`, unchecking removes it.
-- **A progress bar** under the properties of every note with checklist items, such as `14/42 · 33% · last ✅ 2026-07-05`. It stays at the top while you scroll a long list.
+- **Progress bars where you want them:** a small `checkboxes` code block draws a filling bar with `14/42` for the section it sits in, a heading of your choice, or another note. It can stay pinned at the top while you scroll through its section.
 - **Counts on headings,** such as `3/6`, so a packing list shows at a glance which bag is done. A heading counts its subheadings too.
-- **Hide checked** on the bar shows only what is left.
+- **Hide checked** on a progress bar shows only what is left.
 - **Faint checked items** with a grey ✅, so the open ones stand out.
-- **A count in the status bar** for the note you are in.
+- **A count in the status bar** for the note you are in, if you turn it on.
 - **Typing that feels native:** Enter starts the next `- ( )` item, Enter on an empty item ends the list, and Backspace at the start of an item turns it back into a plain bullet.
-- **Nothing to configure:** any note with `- ( )` items gets the progress display. There are no properties, folders, tags or query filters to keep up to date.
+- **Nothing to configure:** any note with `- ( )` items gets boxes and heading counts. There are no properties, folders, tags or query filters to keep up to date.
 
 ## Usage
 
@@ -47,9 +47,36 @@ Both kinds can live in the same note. A trip note can hold "Book the museum tick
 | Skip an item                      | Write `- (-)` instead of `- ( )`                                                    |
 | Turn a task into a checklist item | Run **Toggle checklist item** on the task (a checked task stays checked)            |
 | Convert a whole note              | Command **Convert tasks in this note to checklist items** (one undoable step)       |
-| Show only open items              | **Hide checked** on the progress bar, or the command **Hide or show checked items** |
+| Add a progress bar                | A `checkboxes` code block, see [Progress bars](#progress-bars)                      |
+| Show only open items              | **Hide checked** on a progress bar, or the command **Hide or show checked items**   |
 
 **Toggle checklist item** works on the cursor line or on every selected line. It has no hotkey out of the box, so it cannot clash with yours; **Cmd/Ctrl+Shift+L** is a good choice under **Settings → Hotkeys**. Obsidian's own **Cmd/Ctrl+L** keeps toggling tasks, so both kinds are then one shortcut away.
+
+## Progress bars
+
+Put a `checkboxes` code block where you want a bar:
+
+````markdown
+```checkboxes
+progress
+```
+````
+
+It counts the checklist items of the section it sits in, subheadings included: at the top of a note it counts the whole note, under `## Europe` all of Europe, under `### Albania` only Albania. The word `progress` is optional; it just tells anyone reading the raw text what the block is.
+
+To count something else, add a heading, a note, or both:
+
+````markdown
+```checkboxes
+progress
+heading: Grocery list
+note: Weekly shopping
+```
+````
+
+`note:` takes a note name as you would link it (`Padova` or `[[Padova]]`), so a trip overview can show the bars of several trip notes. Without `heading:`, a bar for another note counts all of it.
+
+A bar that counts its own note has a **Hide checked** switch. With **Sticky progress bar** on (the default), the bar stays at the top of the note while you scroll through its section; with bars in nested sections, the innermost one is shown.
 
 ## Why not…
 
@@ -63,24 +90,13 @@ Both kinds can live in the same note. A trip note can hold "Book the museum tick
 
 **…the Tasks global filter?** Tasks can treat only lines with a tag such as `#task` as tasks. Then every real task needs that tag, and Dataview and Obsidian itself still see every checkbox.
 
-| | Plain `- [ ]` | Tasks `NON_TASK` status | Tasks global filter | Checkboxes `- ( )` |
-|---|---|---|---|---|
-| In Tasks queries | Yes | Yes, except `not done` queries | No | No |
-| In Dataview task queries | Yes | Yes | Yes | No |
-| In `task:` search and other plugins | Yes | Yes | Yes | No |
-| Setup | An exclusion in every query | Define a status | Tag every real task | None |
-| Clickable without extra plugins | Yes | Yes | Yes | No: shows as text |
-| Rendered as a box on GitHub and in other editors | Yes | No: shows as `[P]` | Yes | No: shows as text |
-
-The last two rows are the trade-off: `( )` is not standard Markdown, so outside Obsidian it is text.
-
 ## Without the plugin
 
 The lines stay readable: `- ( ) Oat milk` and `- (x) Coffee ✅ 2026-10-16` are plain text in any editor, on GitHub, in an export or on a phone without the plugin. To check an item there, type an `x` between the brackets. Nothing is stored outside your notes.
 
 ## Compatibility
 
-- Works alongside Tasks, Dataview and any theme. Task plugins only read `[ ]`, so they never see checklist items.
+- Works on its own: Tasks and Dataview are not needed. Alongside them, and with any theme, it works too; task plugins only read `[ ]`, so they never see checklist items.
 - Desktop and mobile.
 - Source mode shows the raw `( )` text, like it shows `[ ]`.
 - Lines starting with `(a)` or `(1)` stay ordinary text: only `( )`, `(x)`, `(X)` and `(-)` are checklist items.
@@ -88,7 +104,7 @@ The lines stay readable: `- ( ) Oat milk` and `- (x) Coffee ✅ 2026-10-16` are 
 
 ## Settings
 
-Done dates, heading counts, the sticky progress bar, dimming of checked items and the status-bar count can each be turned off.
+Done dates, heading counts, the sticky progress bar and dimming of checked items can each be turned off. The status-bar count is off until you turn it on.
 
 ## Installation
 

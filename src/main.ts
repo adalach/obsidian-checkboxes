@@ -1,25 +1,31 @@
 // Checkboxes: wiring only. List lines starting with "( )", "(x)" or "(-)" are checklist
 // items: clickable boxes that task plugins ignore. Notes with items get per-heading counts and dimmed
-// checked items; a progress bar with `checkboxes: true` in the properties or a ```checkboxes block.
+// checked items; a ```checkboxes block draws a progress bar.
 import type { EditorView } from "@codemirror/view";
 import { MarkdownView, Plugin, debounce, moment } from "obsidian";
-import { ProgressBars, updateRenderedCounts } from "./bar";
 import { blockProcessor } from "./block";
 import { registerCommands } from "./commands";
 import { checklistEditor, enterKeymap, refreshEditor } from "./editor";
 import { ChecklistStats, analyzeCached, percent } from "./logic";
 import { readingProcessor } from "./reading";
 import { ChecklistSettingTab, ChecklistSettings, DEFAULT_SETTINGS } from "./settings";
+import { StickyBars } from "./sticky";
+import { ChecklistViews, updateRenderedCounts } from "./views";
 
 export default class CheckboxesPlugin extends Plugin {
 	settings: ChecklistSettings = { ...DEFAULT_SETTINGS };
-	bars!: ProgressBars;
+	views!: ChecklistViews;
+	sticky!: StickyBars;
+	private docs = new Set<Document>([document]); // the main window and every pop-out window
 	private statusEl!: HTMLElement;
 	private pending = new Set<MarkdownView>();
 	private flush = debounce(() => {
 		const views = [...this.pending];
 		this.pending.clear();
-		views.forEach(v => this.bars.refresh(v));
+		views.forEach(v => {
+			this.views.refresh(v);
+			this.sticky.update(v);
+		});
 		this.updateStatus();
 	}, 120, false);
 
@@ -29,12 +35,8 @@ export default class CheckboxesPlugin extends Plugin {
 	async onload(): Promise<void> {
 		await this.loadSettings();
 		const settings = () => this.settings;
-		this.bars = new ProgressBars(settings, path => this.refreshPath(path),
-			view => {
-				// a checkbox property is true; a text property typed as "true" counts too
-				const v: unknown = view.file && this.app.metadataCache.getFileCache(view.file)?.frontmatter?.checkboxes;
-				return v === true || (typeof v === "string" && v.trim().toLowerCase() === "true");
-			});
+		this.views = new ChecklistViews(path => this.refreshPath(path));
+		this.sticky = new StickyBars(settings, this.views);
 		this.statusEl = this.addStatusBarItem();
 		this.statusEl.addClass("cp-status");
 		this.statusEl.hide();
@@ -42,12 +44,25 @@ export default class CheckboxesPlugin extends Plugin {
 
 		this.registerEditorExtension([checklistEditor(settings, this.today), enterKeymap()]);
 		this.registerMarkdownPostProcessor(readingProcessor(this.app, settings, this.today));
-		this.registerMarkdownCodeBlockProcessor("checkboxes", blockProcessor(this.app));
+		this.registerMarkdownCodeBlockProcessor("checkboxes", blockProcessor(this.app, this.views));
 		this.addSettingTab(new ChecklistSettingTab(this.app, this));
 		registerCommands(this);
 
 		const { workspace, metadataCache } = this.app;
-		workspace.onLayoutReady(() => this.refreshAll());
+		workspace.onLayoutReady(() => {
+			workspace.iterateAllLeaves(leaf => this.docs.add(leaf.view.containerEl.ownerDocument));
+			this.applyBodyClasses();
+			this.refreshAll();
+		});
+		this.registerEvent(workspace.on("window-open", win => {
+			this.docs.add(win.doc);
+			this.applyBodyClasses();
+		}));
+		this.registerEvent(workspace.on("window-close", win => this.docs.delete(win.doc)));
+		// scroll does not bubble; listen in the capture phase for the scrollers of every note
+		this.registerDomEvent(document, "scroll", e => this.sticky.updateFor(e.target, this.markdownViews()), { capture: true, passive: true });
+		this.registerEvent(workspace.on("window-open", win =>
+			this.registerDomEvent(win.doc, "scroll", e => this.sticky.updateFor(e.target, this.markdownViews()), { capture: true, passive: true })));
 		this.registerEvent(workspace.on("layout-change", () => this.refreshAll()));
 		this.registerEvent(workspace.on("active-leaf-change", () => this.refreshAll()));
 		this.registerEvent(workspace.on("file-open", () => this.refreshAll()));
@@ -60,18 +75,19 @@ export default class CheckboxesPlugin extends Plugin {
 		this.registerEvent(metadataCache.on("changed", (file, data) => {
 			this.refreshPath(file.path);
 			// counts of this note shown elsewhere: embeds, hover previews, other plugins' views
-			updateRenderedCounts(document, file.path, analyzeCached(data));
+			const stats = analyzeCached(data);
+			this.docs.forEach(doc => updateRenderedCounts(doc, file.path, stats));
 		}));
 		this.register(() => this.flush.cancel());
 	}
 
 	onunload(): void {
 		for (const view of this.markdownViews()) {
-			this.bars.removeFrom(view);
+			this.views.removeFrom(view);
 			view.contentEl.querySelectorAll(".markdown-reading-view .cp-count").forEach(el => el.remove());
 		}
-		this.bars.destroy();
-		document.body.removeClass("cp-dim");
+		this.sticky.destroy();
+		this.docs.forEach(doc => doc.body.removeClass("cp-dim"));
 	}
 
 	async loadSettings(): Promise<void> {
@@ -89,7 +105,7 @@ export default class CheckboxesPlugin extends Plugin {
 	}
 
 	private applyBodyClasses(): void {
-		document.body.toggleClass("cp-dim", this.settings.dimChecked);
+		this.docs.forEach(doc => doc.body.toggleClass("cp-dim", this.settings.dimChecked));
 	}
 
 	private markdownViews(): MarkdownView[] {
@@ -99,12 +115,18 @@ export default class CheckboxesPlugin extends Plugin {
 	}
 
 	refreshAll(): void {
-		this.markdownViews().forEach(v => this.bars.refresh(v));
+		this.markdownViews().forEach(v => {
+			this.views.refresh(v);
+			this.sticky.update(v);
+		});
 		this.updateStatus();
 	}
 
 	refreshPath(path: string): void {
-		this.markdownViews().filter(v => v.file?.path === path).forEach(v => this.bars.refresh(v));
+		this.markdownViews().filter(v => v.file?.path === path).forEach(v => {
+			this.views.refresh(v);
+			this.sticky.update(v);
+		});
 		this.updateStatus();
 	}
 

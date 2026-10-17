@@ -4,7 +4,7 @@
 import { Prec, Range, StateEffect } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType, keymap } from "@codemirror/view";
 import { editorLivePreviewField } from "obsidian";
-import { createCount } from "./bar";
+import { createCount } from "./views";
 import { analyzeCached, enterAction, itemSpans, itemState, parseItem, toggleEdits } from "./logic";
 import type { ChecklistSettings } from "./settings";
 
@@ -148,7 +148,7 @@ export function enterKeymap() {
 		key: "Enter",
 		run: view => {
 			// an open link or tag suggestion takes Enter for itself
-			if (document.querySelector(".suggestion-container")) return false;
+			if (view.dom.ownerDocument.querySelector(".suggestion-container")) return false;
 			const sel = view.state.selection;
 			if (sel.ranges.length !== 1 || !sel.main.empty) return false;
 			const pos = sel.main.head;

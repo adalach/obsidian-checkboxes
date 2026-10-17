@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
-	analyze, analyzeCached, applyEdits, blockCount, convertTasks, countLabel, enterAction, findItemLine, hotkeyEdits, itemText,
+	analyze, analyzeCached, applyEdits, blockCount, findBlocks, sectionEnd, convertTasks, countLabel, enterAction, findItemLine, hotkeyEdits, itemText,
 	parseBlock, parseItem, percent, textMatches, toggleEdits,
 } from "../src/logic";
 
@@ -143,6 +143,7 @@ describe("checkboxes blocks", () => {
 		expect(parseBlock("heading: Grocery list\nnote: [[Padova]]\n")).toEqual({ heading: "Grocery list", note: "Padova" });
 		expect(parseBlock("Heading:  #Sights ")).toEqual({ heading: "Sights", note: null });
 		expect(parseBlock("")).toEqual({ heading: null, note: null });
+		expect(parseBlock("progress\nheading: Sights")).toEqual({ heading: "Sights", note: null });
 	});
 	it("counts one heading's section, the whole note, or nothing for a missing heading", () => {
 		const s = analyze(padova);
@@ -150,5 +151,23 @@ describe("checkboxes blocks", () => {
 		expect(blockCount(s, "vicenza places to see")).toEqual({ done: 2, total: 14 });
 		expect(blockCount(s, null)).toEqual({ done: 14, total: 42 });
 		expect(blockCount(s, "Nowhere")).toBeNull();
+	});
+	it("defaults to the section the block sits in, subheadings included, or the whole note above the first heading", () => {
+		const s = analyze(padova);
+		const line = (text: string) => padova.split("\n").findIndex(l => l.includes(text));
+		expect(blockCount(s, null, line("Teatro Olimpico"))).toEqual({ done: 2, total: 14 });
+		expect(blockCount(s, null, line("Main paid / ticketed places") + 1)).toEqual({ done: 3, total: 6 });
+		expect(blockCount(s, null, 0)).toEqual({ done: 14, total: 42 });
+		expect(blockCount(analyze("intro\n# A\n- (x) 1\n## B\n- ( ) 2\n"), null, 2)).toEqual({ done: 1, total: 2 });
+	});
+	it("finds where a block's section ends", () => {
+		const t = analyze("intro\n# A\n- (x) 1\n## B\n- ( ) 2\n## C\n# D\n");
+		expect(sectionEnd(t, 2)).toBe(6); // under A: until D
+		expect(sectionEnd(t, 4)).toBe(5); // under B: until C
+		expect(sectionEnd(t, 0)).toBe(Infinity); // above the first heading: the whole note
+	});
+	it("finds the blocks in a note", () => {
+		const text = "```checkboxes\nprogress\n```\n# A\n~~~checkboxes\nheading: B\n~~~\n```js\nx\n```\n";
+		expect(findBlocks(text)).toEqual([{ line: 0, opts: { heading: null, note: null } }, { line: 4, opts: { heading: "B", note: null } }]);
 	});
 });

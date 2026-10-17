@@ -1,32 +1,6 @@
 /* Checkboxes. Every color comes from the active Obsidian theme. */
 
-/* ---------- progress bar above the note text ---------- */
-.cp-bar {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 2px 12px;
-	padding: 6px 0 7px;
-	margin-bottom: 6px;
-	font-family: var(--font-interface);
-	font-size: var(--font-ui-small);
-	line-height: 1.4;
-	color: var(--text-muted);
-	font-variant-numeric: tabular-nums;
-	background-color: var(--background-primary);
-}
-/* In Live Preview the bar sits beside the inline title; follow the theme's readable line width
-   (Minimal sizes children of .cm-sizer; the default theme sizes .cm-sizer itself). */
-.markdown-source-view.mod-cm6.is-readable-line-width .cm-sizer > .cp-bar {
-	width: var(--line-width, auto);
-	max-width: var(--max-width, none);
-	margin-inline: var(--content-margin, auto);
-}
-.cp-bar.cp-sticky {
-	position: sticky;
-	top: var(--cp-stick, 0);
-	z-index: 3;
-}
+/* ---------- progress bar: a ```checkboxes block ---------- */
 .cp-track {
 	flex: 0 1 240px;
 	min-width: 100px;
@@ -45,12 +19,11 @@
 	color: var(--text-normal);
 	font-weight: var(--font-semibold);
 }
-.cp-bar.is-complete .cp-num { color: var(--text-accent); }
 .cp-last {
 	color: var(--text-faint);
 	filter: grayscale(1);
 }
-.cp-bar .cp-toggle {
+.cp-block .cp-toggle {
 	margin-left: auto;
 	height: auto;
 	padding: 0 2px;
@@ -62,7 +35,7 @@
 	font-weight: inherit;
 	cursor: var(--cursor);
 }
-.cp-bar .cp-toggle:hover {
+.cp-block .cp-toggle:hover {
 	background: none;
 	text-decoration: underline;
 }
@@ -171,7 +144,6 @@ li.cp-item[data-cp-item="-"] {
 	.cp-fill { transition: none; }
 }
 
-/* ---------- a bar placed with a ```checkboxes block ---------- */
 .cp-block {
 	display: flex;
 	align-items: center;
@@ -187,3 +159,20 @@ li.cp-item[data-cp-item="-"] {
 .cp-block-label { color: var(--text-normal); }
 .cp-block.is-complete .cp-num { color: var(--text-accent); }
 .cp-block-missing { color: var(--text-faint); }
+
+/* "Sticky progress bar": the pinned copy at the top of the note */
+.cp-sticky-host {
+	position: relative;
+}
+.cp-sticky {
+	position: absolute;
+	top: 0;
+	inset-inline: 0;
+	z-index: 3;
+	padding: 2px var(--size-4-8, 32px);
+	background-color: var(--background-primary);
+}
+.cp-sticky .cp-block {
+	max-width: var(--file-line-width, 700px);
+	margin-inline: auto;
+}

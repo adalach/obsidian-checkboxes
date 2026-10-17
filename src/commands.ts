@@ -33,7 +33,7 @@ export function registerCommands(plugin: CheckboxesPlugin): void {
 		checkCallback: checking => {
 			const view = app.workspace.getActiveViewOfType(MarkdownView);
 			if (!view?.file || !analyzeCached(view.getViewData()).items.length) return false;
-			if (!checking) plugin.bars.toggleHidden(view.file.path);
+			if (!checking) plugin.views.toggleHidden(view.file.path);
 			return true;
 		},
 	});

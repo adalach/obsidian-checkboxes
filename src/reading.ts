@@ -2,7 +2,7 @@
 // headings get counts. A click is written to the item's source line: the renderer's line number
 // when it gives one, otherwise the only item with that text, or the one under the heading above it.
 import { App, MarkdownPostProcessor, MarkdownPostProcessorContext, Notice, TFile } from "obsidian";
-import { createCount } from "./bar";
+import { createCount } from "./views";
 import { analyzeCached, applyEdits, findItemLine, itemState, parseItem, textMatches, toggleEdits } from "./logic";
 import type { ChecklistSettings } from "./settings";
 

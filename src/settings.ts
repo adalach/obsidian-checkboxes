@@ -4,8 +4,8 @@ import type CheckboxesPlugin from "./main";
 
 export interface ChecklistSettings {
 	doneDates: boolean; // checking an item writes " ✅ <today>", unchecking removes it
+	stickyBar: boolean; // a ```checkboxes bar stays at the top while you scroll through its section
 	headingCounts: boolean; // "3/7" at the right edge of each heading with items under it
-	stickyBar: boolean; // the progress bar stays at the top while scrolling
 	dimChecked: boolean; // checked items in faint text with a grey ✅
 	statusBar: boolean; // "14/42 checked" in the status bar for the active note
 }
@@ -29,7 +29,7 @@ export class ChecklistSettingTab extends PluginSettingTab {
 		return [
 			toggle("Done dates", "Write ✅ and today's date when an item is checked, and remove it when unchecked.", "doneDates"),
 			toggle("Heading counts", "Show checked/total at the right edge of each heading.", "headingCounts"),
-			toggle("Sticky progress bar", "Keep the progress bar of a note with checkboxes: true at the top while scrolling.", "stickyBar"),
+			toggle("Sticky progress bar", "Keep a progress bar at the top of the note while you scroll through its section.", "stickyBar"),
 			toggle("Dim checked items", "Show checked items in faint text with a grey ✅.", "dimChecked"),
 			toggle("Status bar", "Show the active note's progress in the status bar.", "statusBar"),
 		];
